@@ -1,128 +1,133 @@
-# macOS Battery untuk KDE Plasma 6
+# macOS Battery for KDE Plasma 6
 
-Widget baterai elegan bergaya macOS untuk KDE Plasma 6, lengkap dengan persentase.
+A macOS-style battery widget for Plasma 6, with the percent on the glyph, connected devices, power profiles, and a sleep-block toggle.
 
-![Pratinjau](docs/preview.png)
+Fork of [rifkiaz/macos-battery-kde](https://github.com/rifkiaz/macos-battery-kde) (v1.1.2), updated for Plasma 6.7's battery APIs. The panel glyph is the same drawing. The popup talks to the same private plugins as stock Power & Battery.
 
-*(Pratinjau; font dan warna mengikuti tema Plasma kamu.)*
+![Preview](docs/preview.png)
 
-## Fitur
+*Preview. Font and colors follow your Plasma theme.*
 
-- Ikon baterai ala macOS: outline tipis, kutub di kanan, isi yang mengikuti level baterai.
-- Persentase di **dalam** baterai (gaya macOS terbaru, angka "terpotong" di bagian yang terisi), di **kiri** atau **kanan** baterai, atau disembunyikan.
-- Ukuran bisa diatur: tinggi baterai, lebar baterai, dan ukuran teks persentase.
-- Hijau saat mengisi daya, merah saat baterai lemah (bisa dimatikan), ikon petir saat dicas.
-- Klik ikon untuk popup: persentase besar, status ("Charging, 38 min until full", "2 h 10 min remaining"), sumber daya, dan daftar perangkat lain yang punya baterai (mouse, keyboard, dll.).
-- Bisa ditaruh di panel (horizontal/vertikal) maupun di desktop.
-- Mengikuti tema terang/gelap Plasma.
+## Features
 
-## Kompatibilitas
+- Thin macOS battery outline, nub on the right, fill that tracks charge.
+- Percent **inside** the battery (knockout where it overlaps the fill), to the **left** or **right**, or hidden.
+- Height, width, and percent text size are adjustable.
+- Green while charging, red when low (can be turned off), lightning bolt while charging.
+- Popup: large percent, remaining time with pack health in brackets when UPower reports it (`2 h 10 min remaining (82% health)`), power source, and other batteries (mouse, keyboard, headset, and so on). Device health sits next to that row's percent when the device publishes it.
+- Power profile slider: Power Save, Balanced, Performance. Scroll the panel icon to change it.
+- Sleep-block switch, plus apps that are blocking sleep or screen locking, with Unblock / Allow.
+- Middle-click the panel icon to block or allow sleep. A small crescent sits on the battery nub while that block is on.
+- Horizontal or vertical panel, or the desktop.
+- Follows Plasma light and dark themes.
 
-- **KDE Plasma 6.0 ke atas** (Qt 6). Tidak untuk Plasma 5.
-- Murni QML, tanpa kode C++ yang perlu dikompilasi, jadi jalan di distro apa saja yang memakai Plasma 6: **openSUSE Tumbleweed, openSUSE Leap 16**, Fedora KDE, Arch, KDE neon, Kubuntu 24.10+, Debian 13, dll.
-- Data baterai diambil dari mesin `powermanagement` milik Plasma (lewat `org.kde.plasma.plasma5support`) yang sudah terpasang bersama Plasma Workspace, sama seperti sumber data widget baterai bawaan.
+## Compatibility
 
-> openSUSE Leap 15.x masih memakai Plasma 5, jadi widget ini butuh Leap 16 atau Tumbleweed.
+- **KDE Plasma 6.2+** (Qt 6). Tested on Plasma 6.7. Not for Plasma 5.
+- Pure QML. No C++ to compile. Runs on Plasma 6 distros: openSUSE Tumbleweed, openSUSE Leap 16, Fedora KDE, Arch, KDE neon, Kubuntu 24.10+, Debian 13, and others.
+- Battery, inhibitions, and power profiles come from the same plugins as the stock applet: `org.kde.plasma.private.battery` (`BatteryControlModel`) and `org.kde.plasma.private.batterymonitor` (`InhibitionControl`, `PowerProfilesControl`).
 
-## Instalasi
+openSUSE Leap 15.x is still Plasma 5, so this widget needs Leap 16 or Tumbleweed.
 
-### Cara 1: dari file `.plasmoid` (paling mudah)
+## Install
 
-1. Unduh `macos-battery-<versi>.plasmoid` (atau buat sendiri dengan `./build.sh`).
-2. Klik kanan desktop atau panel → **Add Widgets…** (Tambah Widget).
-3. Klik **Get New…** → **Install Widget From Local File…**, pilih file `.plasmoid` tadi.
-4. Cari **macOS Battery** di daftar widget, lalu seret ke panel atau desktop.
+### From a `.plasmoid` file
 
-Atau lewat terminal:
+1. Download `macos-battery-<version>.plasmoid`, or build one with `./build.sh`.
+2. Right-click the desktop or panel, **Add Widgets…**
+3. **Get New…** → **Install Widget From Local File…**, pick the `.plasmoid`.
+4. Search for **macOS Battery** and drag it onto the panel or desktop.
+
+Or from a terminal:
 
 ```bash
-kpackagetool6 --type Plasma/Applet --install macos-battery-1.0.0.plasmoid
+kpackagetool6 --type Plasma/Applet --install macos-battery-1.2.4.plasmoid
 ```
 
-### Cara 2: dari source
+### From source
 
 ```bash
-git clone https://github.com/rifkiaz/macos-battery-kde.git
+git clone https://github.com/shubham-cpp/macos-battery-kde.git
 cd macos-battery-kde
 ./install.sh
 ```
 
-`install.sh` otomatis melakukan upgrade kalau widget sudah pernah dipasang. Kalau `kpackagetool6` belum ada:
+`install.sh` upgrades if the widget is already installed. If `kpackagetool6` is missing:
 
-| Distro | Perintah |
+| Distro | Command |
 | --- | --- |
 | openSUSE Tumbleweed / Leap 16 | `sudo zypper install kf6-kpackage` |
 | Fedora | `sudo dnf install kf6-kpackage` |
 | Arch / Manjaro | `sudo pacman -S kpackage` |
 | Debian / Ubuntu / KDE neon | `sudo apt install kpackagetool6` |
 
-Setelah upgrade, muat ulang Plasma supaya versi baru terbaca:
+After an upgrade, reload Plasma so it picks up the new QML:
 
 ```bash
 systemctl --user restart plasma-plasmashell
 ```
 
-### Menghapus
+### Uninstall
 
 ```bash
 ./uninstall.sh
-# atau
+# or
 kpackagetool6 --type Plasma/Applet --remove com.github.rifkiaz.macosbattery
 ```
 
-## Pengaturan
+## Settings
 
-Klik kanan widget → **Configure macOS Battery…**
+Right-click the widget → **Configure macOS Battery…**
 
-- **Percentage**: Hidden / Left of the battery / Inside the battery / Right of the battery
-- **Percentage text size**: ukuran teks persen di kiri/kanan (50–200%)
-- **Battery height**: tinggi baterai, relatif terhadap ukuran otomatis panel (50–250%, tidak melebihi tebal panel)
-- **Battery width**: lebar baterai dalam persen dari tingginya (140–350%, default 215%)
-- **Reset size**: kembalikan ukuran ke default
-- **Colors**: hijau saat mengisi, merah saat lemah
-- **Low battery level**: batas "lemah" (default 20%)
-- **Popup**: tampilkan perangkat lain (mouse, keyboard, …)
+- **Percentage:** Hidden / Left of the battery / Inside the battery / Right of the battery
+- **Percentage text size:** size of the percent to the left or right (50–200%)
+- **Battery height:** relative to the automatic panel size (50–250%, never thicker than the panel)
+- **Battery width:** percent of height (140–350%, default 215%)
+- **Reset size:** back to those defaults
+- **Colors:** green while charging, red when low
+- **Low battery level:** the "low" cutoff (default 20%)
+- **Popup:** connected devices, power profile slider, sleep-block toggle and inhibitors
 
-Tips: kalau mau tampilan persis macOS, sembunyikan widget baterai bawaan Plasma di System Tray (klik kanan System Tray → Configure → Entries → Power and Battery → *Disabled* atau *Always hidden*).
+To match macOS more closely, hide Plasma's own battery in the system tray: right-click System Tray → Configure → Entries → Power and Battery → *Disabled* or *Always hidden*.
 
-## Supaya muncul di "Get New Widgets" (KDE Store)
+## KDE Store ("Get New Widgets")
 
-Dialog **Add Widgets → Get New… → Download New Plasma Widgets** mengambil daftar dari [store.kde.org](https://store.kde.org). Agar widget ini bisa diinstal langsung dari situ:
+**Add Widgets → Get New… → Download New Plasma Widgets** lists items from [store.kde.org](https://store.kde.org). To publish there:
 
-1. Jalankan `./build.sh` untuk membuat `macos-battery-<versi>.plasmoid`.
-2. Login atau daftar di <https://store.kde.org> (akun KDE).
-3. Klik **Add Product** (ikon `+` di pojok kanan atas).
-4. Isi:
-   - **Category**: pilih kategori widget untuk **Plasma 6** (di store namanya "Plasma 6 Applets" / widget di bawah "Plasma 6 Extensions"). Jangan kategori Plasma 5, karena dialog di Plasma 6 hanya menampilkan item Plasma 6.
-   - **Title**: `macOS Battery`
-   - **Description**, **License** (GPL-2.0-or-later), dan link ke repo GitHub ini.
-   - Unggah gambar `docs/preview.png` (atau screenshot asli) sebagai gambar produk.
-5. Di tab **Files**, unggah file `.plasmoid`.
-6. Simpan/publish. Setelah tampil di store, widget bisa dicari dengan nama "macOS Battery" dari dialog Get New Widgets di desktop KDE mana pun.
+1. Run `./build.sh` to make `macos-battery-<version>.plasmoid`.
+2. Sign in at <https://store.kde.org>.
+3. **Add Product**.
+4. Category must be a **Plasma 6** applet category. Plasma 6's Get New Widgets dialog hides Plasma 5 items.
+5. Title `macOS Battery`, license GPL-2.0-or-later, link this GitHub repo, upload `docs/preview.png`.
+6. On the **Files** tab, upload the `.plasmoid`.
 
-Untuk rilis berikutnya: naikkan `Version` di `package/metadata.json`, jalankan `./build.sh`, lalu unggah file baru di halaman produk yang sama. Pengguna akan mendapat notifikasi update di dialog Get New Widgets.
+For a later release, bump `Version` in `package/metadata.json`, run `./build.sh`, and upload the new file on the same product page.
 
-## Struktur
+## Layout
 
 ```
 package/
-├── metadata.json                    # identitas widget (Plasma 6)
+├── metadata.json                    # Plasma 6 applet id
 └── contents/
     ├── config/
-    │   ├── main.xml                 # opsi konfigurasi
-    │   └── config.qml               # halaman pengaturan
+    │   ├── main.xml                 # settings
+    │   └── config.qml               # settings pages
     └── ui/
-        ├── main.qml                 # data baterai + status
-        ├── CompactRepresentation.qml# tampilan di panel
-        ├── FullRepresentation.qml   # popup / tampilan desktop
-        ├── BatteryIcon.qml          # gambar baterai ala macOS
-        ├── BatteryLabel.qml         # angka + petir di dalam baterai
-        ├── Bolt.qml                 # ikon petir
-        └── configGeneral.qml        # form pengaturan
+        ├── main.qml                 # BatteryControlModel, inhibitions, profiles
+        ├── CompactRepresentation.qml# panel glyph, middle-click, scroll
+        ├── FullRepresentation.qml   # popup / desktop
+        ├── DeviceRow.qml            # mouse / headset / keyboard
+        ├── PowerProfileRow.qml      # Power Save / Balanced / Performance
+        ├── SleepBlock.qml           # toggle + app inhibitors
+        ├── Moon.qml                 # crescent on the nub while sleep is blocked
+        ├── BatteryIcon.qml          # macOS battery drawing
+        ├── BatteryLabel.qml         # percent + bolt inside the battery
+        ├── Bolt.qml                 # charging bolt
+        └── configGeneral.qml        # settings form
 ```
 
-Untuk mencoba tanpa memasang: `plasmoidviewer -a package` (paket `plasma-sdk`).
+Try it without installing: `plasmoidviewer -a package` (from `plasma-sdk`).
 
-## Lisensi
+## License
 
 GPL-2.0-or-later

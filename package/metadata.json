@@ -7,15 +7,15 @@
             }
         ],
         "Category": "System Information",
-        "Description": "Elegant macOS-style battery indicator with percentage",
+        "Description": "macOS-style battery indicator with devices, power profiles, and sleep control",
         "Description[id]": "Indikator baterai elegan ala macOS dengan persentase",
         "Icon": "battery-good",
         "Id": "com.github.rifkiaz.macosbattery",
         "License": "GPL-2.0-or-later",
         "Name": "macOS Battery",
         "Name[id]": "Baterai macOS",
-        "Version": "1.1.2",
-        "Website": "https://github.com/rifkiaz/macos-battery-kde"
+        "Version": "1.2.4",
+        "Website": "https://github.com/shubham-cpp/macos-battery-kde"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
 }

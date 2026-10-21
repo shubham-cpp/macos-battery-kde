@@ -10,12 +10,23 @@ import org.kde.kcmutils as KCM
 
 KCM.SimpleKCM {
     property int cfg_percentPosition
+    property int cfg_percentPositionDefault
     property alias cfg_iconSize: sizeSpin.value
+    property int cfg_iconSizeDefault
     property alias cfg_iconAspect: aspectSpin.value
+    property int cfg_iconAspectDefault
     property alias cfg_textSize: textSpin.value
+    property int cfg_textSizeDefault
     property alias cfg_colorFill: colorCheck.checked
+    property bool cfg_colorFillDefault
     property alias cfg_lowThreshold: lowSpin.value
+    property int cfg_lowThresholdDefault
     property alias cfg_showDeviceList: deviceCheck.checked
+    property bool cfg_showDeviceListDefault
+    property alias cfg_showPowerProfile: profileCheck.checked
+    property bool cfg_showPowerProfileDefault
+    property alias cfg_showSleepBlock: sleepCheck.checked
+    property bool cfg_showSleepBlockDefault
 
     Kirigami.FormLayout {
         QQC2.ComboBox {
@@ -94,10 +105,22 @@ KCM.SimpleKCM {
             valueFromText: (text, locale) => parseInt(text)
         }
 
+        Item { Kirigami.FormData.isSection: true }
+
         QQC2.CheckBox {
             id: deviceCheck
             Kirigami.FormData.label: i18n("Popup:")
             text: i18n("Show connected devices (mouse, keyboard, …)")
+        }
+
+        QQC2.CheckBox {
+            id: profileCheck
+            text: i18n("Show power profile slider")
+        }
+
+        QQC2.CheckBox {
+            id: sleepCheck
+            text: i18n("Show sleep-block toggle and inhibitors")
         }
     }
 }

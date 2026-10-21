@@ -20,6 +20,11 @@ else
     kpackagetool6 --type Plasma/Applet --install package
 fi
 
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/plasmashell/qmlcache"
+if [ -d "$CACHE" ]; then
+    rm -rf "$CACHE"
+fi
+
 echo
 echo "Done. Right-click the panel or desktop > Add Widgets… and search for \"macOS Battery\"."
 echo "If you upgraded an existing copy, restart Plasma to reload it:"

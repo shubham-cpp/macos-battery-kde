@@ -32,10 +32,24 @@ MouseArea {
     Layout.preferredWidth: vertical ? -1 : grid.implicitWidth
     Layout.minimumHeight: vertical ? grid.implicitHeight : 0
     Layout.preferredHeight: vertical ? grid.implicitHeight : -1
+    clip: false
 
     hoverEnabled: true
-    acceptedButtons: Qt.LeftButton
-    onClicked: root.expanded = !root.expanded
+    acceptedButtons: Qt.LeftButton | Qt.MiddleButton
+    property bool wasExpanded: false
+    onPressed: wasExpanded = root.expanded
+    onClicked: mouse => {
+        if (mouse.button === Qt.MiddleButton) {
+            root.toggleSleepBlock();
+        } else {
+            root.expanded = !wasExpanded;
+        }
+    }
+    onWheel: wheel => {
+        const delta = (wheel.inverted ? -1 : 1) * (wheel.angleDelta.y ? wheel.angleDelta.y : -wheel.angleDelta.x);
+        const steps = Math.round(delta / 120);
+        root.cyclePowerProfile(steps);
+    }
 
     component PercentText: Text {
         Layout.alignment: Qt.AlignCenter
@@ -44,39 +58,66 @@ MouseArea {
         font.family: Kirigami.Theme.defaultFont.family
         font.pixelSize: Math.max(6, Math.round(compact.iconHeight * 0.75 * root.textScale))
         font.weight: Font.Medium
+        textFormat: Text.PlainText
     }
 
     GridLayout {
         id: grid
         anchors.centerIn: parent
+        clip: false
         flow: compact.vertical ? GridLayout.TopToBottom : GridLayout.LeftToRight
         columns: compact.vertical ? 1 : 3
         rows: compact.vertical ? 3 : 1
         rowSpacing: Math.round(Kirigami.Units.smallSpacing / 2)
         columnSpacing: Kirigami.Units.smallSpacing
 
-        // Left (or top, in a vertical panel)
         PercentText {
             visible: root.percentPosition === 1
         }
 
-        BatteryIcon {
+        Item {
+            id: iconBox
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: compact.iconHeight
             Layout.preferredWidth: compact.iconWidth
-            percent: root.percent
-            present: root.hasBattery
-            charging: root.charging
-            showPercentInside: root.percentPosition === 2
-            colorize: root.colorFill
-            lowThreshold: root.lowThreshold
-            foreground: Kirigami.Theme.textColor
-            knockout: Kirigami.Theme.backgroundColor
-            fontFamily: Kirigami.Theme.defaultFont.family
-            opacity: compact.containsMouse ? 1 : 0.92
+            Layout.preferredHeight: compact.iconHeight
+            Layout.minimumWidth: compact.iconWidth
+            Layout.maximumWidth: compact.iconWidth
+            Layout.minimumHeight: compact.iconHeight
+            Layout.maximumHeight: compact.iconHeight
+            implicitWidth: compact.iconWidth
+            implicitHeight: compact.iconHeight
+            clip: false
+
+            BatteryIcon {
+                anchors.fill: parent
+                percent: root.percent
+                present: root.hasBattery
+                charging: root.charging
+                showPercentInside: root.percentPosition === 2
+                colorize: root.colorFill
+                lowThreshold: root.lowThreshold
+                foreground: Kirigami.Theme.textColor
+                knockout: Kirigami.Theme.backgroundColor
+                fontFamily: Kirigami.Theme.defaultFont.family
+                opacity: compact.containsMouse ? 1 : 0.92
+            }
+
+            Moon {
+                width: Math.max(8, Math.round(iconBox.height * 0.5))
+                height: width
+                x: iconBox.width - width * 0.58
+                y: iconBox.height - height * 0.55
+                z: 1
+                color: Kirigami.Theme.textColor
+                outline: Kirigami.Theme.backgroundColor
+                outlineWidth: Math.max(1, Math.round(width * 0.1))
+                opacity: root.inhibitions.isManuallyInhibited ? 1 : 0
+                Behavior on opacity {
+                    NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
+                }
+            }
         }
 
-        // Right (or bottom, in a vertical panel)
         PercentText {
             visible: root.percentPosition === 3
         }

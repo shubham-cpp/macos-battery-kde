@@ -35,5 +35,11 @@
         <entry name="showDeviceList" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="showPowerProfile" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="showSleepBlock" type="Bool">
+            <default>true</default>
+        </entry>
     </group>
 </kcfg>
